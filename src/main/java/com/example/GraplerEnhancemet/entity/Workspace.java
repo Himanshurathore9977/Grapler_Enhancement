@@ -2,6 +2,11 @@ package com.example.GraplerEnhancemet.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +34,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
+@JsonIdentityInfo(
+	    generator = ObjectIdGenerators.PropertyGenerator.class,
+	    property = "workspaceID"
+)
+
 public class Workspace {
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,15 +48,18 @@ public class Workspace {
 	 @Column(name = "workspaceName", nullable = false)
 	 private String workspaceName ;
 	 
+	 @JsonBackReference
 	 @ManyToOne
 	 @JoinColumn(name = "company_id")
 	 private Company company;
 	 
-	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-	 private List<Project> projects;
+//	 @JsonManagedReference
+//	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+//	 private List<Project> projects;
 	 
-	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-	 private List<Task> tasks;  
+//	 @JsonManagedReference
+//	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+//	 private List<Task> tasks;  
 	 
 	 
 	 

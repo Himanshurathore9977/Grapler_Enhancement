@@ -2,6 +2,8 @@ package com.example.GraplerEnhancemet.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,36 +35,60 @@ public class User {
 
     @Column(name = "profile")
     private String profile;
+    
+   
 
+
+    @JsonManagedReference
     @ManyToMany
     @JoinTable(
-        name = "user_roles",
+        name = "company_admins",
         joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+        inverseJoinColumns = @JoinColumn(name = "company_id")
     )
-    private List<UserRole> roles;
-
-    @ManyToMany(mappedBy = "users")
-    private List<Project> projects;
-
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks;
-
-    @ManyToMany(mappedBy = "companyAdmins")
     private List<Company> adminCompanies;
-
     
-    @OneToMany
-    private List<Company> companyCreated ; 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "createdBy")
+    private List<Company> companyCreated;
+    
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "users")
+    private List<Company> companies;
+    
+    
+//  @JsonManagedReference
+//  @ManyToMany(cascade = CascadeType.ALL)
+//  @JoinTable(
+//      name = "user_task",
+//      joinColumns = @JoinColumn(name = "user_id"),
+//      inverseJoinColumns = @JoinColumn(name = "task_id")
+//  )
+//  private List<Task> tasks;
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('\n')
+        .append("User{id=").append(id)
+          .append(
+        		  ", name='").append(name).append("'")
+          .append(", adminCompanies=[");
+        
+        for (Company company : adminCompanies) {
+            sb.append(company.getCompanyName()).append(", ");
+        }
+        
+        if (!adminCompanies.isEmpty()) {
+            sb.setLength(sb.length() - 2); // Remove the trailing comma and space
+        }
+        
+        sb.append("]}")
+        ;
+        
+        return sb.toString();
+    }
     
     
 }
 
-//
-//@ManyToMany
-//@JoinTable(
-//    name = "user_company",
-//    joinColumns = @JoinColumn(name = "user_id"),
-//    inverseJoinColumns = @JoinColumn(name = "company_id")
-//)
-//private List<Company> companies;
