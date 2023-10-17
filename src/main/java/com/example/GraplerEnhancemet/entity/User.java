@@ -10,8 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -20,7 +18,7 @@ import lombok.Data;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @Data
 public class User {
     @Id
@@ -36,35 +34,41 @@ public class User {
     @Column(name = "profile")
     private String profile;
     
-   
-
-
     @JsonManagedReference
-    @ManyToMany
-    @JoinTable(
-        name = "company_admins",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "company_id")
-    )
-    private List<Company> adminCompanies;
+    @OneToMany
+    private List <Role> roles ;
     
+       
     @JsonManagedReference
     @OneToMany(mappedBy = "createdBy")
     private List<Company> companyCreated;
     
+    
+    // projects 
     @JsonManagedReference
-    @ManyToMany(mappedBy = "users")
-    private List<Company> companies;
+	@ManyToMany
+	private List<Project> projects;
     
     
-//  @JsonManagedReference
-//  @ManyToMany(cascade = CascadeType.ALL)
-//  @JoinTable(
-//      name = "user_task",
-//      joinColumns = @JoinColumn(name = "user_id"),
-//      inverseJoinColumns = @JoinColumn(name = "task_id")
-//  )
-//  private List<Task> tasks;
+//    @JsonManagedReference
+//    @ManyToMany(mappedBy = "user")
+//    private List<Company> companies;
+    
+    @JsonManagedReference
+    @OneToMany(mappedBy = "taskCreator", cascade = CascadeType.ALL)
+    private List<Task> taskCreated;
+    
+    @JsonManagedReference
+    @ManyToMany( cascade = CascadeType.ALL)
+    private List<Task> assignedTask;
+    
+    @JsonManagedReference
+    @OneToMany(mappedBy = "accountableAssignee", cascade = CascadeType.ALL)
+    private List<Task> accountableAssigned ; 
+    
+  @JsonManagedReference
+  @ManyToMany(cascade = CascadeType.ALL)
+  private List<Company> companies ;
     
     @Override
     public String toString() {
@@ -72,19 +76,11 @@ public class User {
         sb.append('\n')
         .append("User{id=").append(id)
           .append(
-        		  ", name='").append(name).append("'")
-          .append(", adminCompanies=[");
+        		  ", name='").append(name).append("'") ; 
+         // .append(", adminCompanies=[");
         
-        for (Company company : adminCompanies) {
-            sb.append(company.getCompanyName()).append(", ");
-        }
         
-        if (!adminCompanies.isEmpty()) {
-            sb.setLength(sb.length() - 2); // Remove the trailing comma and space
-        }
-        
-        sb.append("]}")
-        ;
+        sb.append("]}") ;
         
         return sb.toString();
     }

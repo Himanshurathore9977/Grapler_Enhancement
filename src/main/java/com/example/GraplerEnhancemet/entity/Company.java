@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,13 +46,12 @@ import lombok.ToString;
 public class Company {
 	@Id                                                                
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	@Column(name = "companyID",  nullable = false )
 	private Long companyID ;
 	
 	
 	@Column(name = "companyName", nullable = false)
     private String companyName;
-	
+
 	
 	@Column(name = "email", nullable = false)
     private String email; 
@@ -67,7 +68,6 @@ public class Company {
     @Column(name = "structure_type")
     private String  structureType;
 	
-	
 	@Column(name = "contact_number")
     private String contactNumber; 
 		
@@ -77,32 +77,27 @@ public class Company {
 	@Column(name = "creationTime")
 	private LocalDateTime creationTime ; 
 	
+	@JsonManagedReference
+	@OneToMany
+	private List<Role> roles  ; 
 	
-	//company admins 
-	@JsonManagedReference // This side is the "reverse" part of the relationship
-	@ManyToMany(mappedBy = "adminCompanies")
-    private List<User> companyAdmins;
-    
-	
+
 	//company creator 
 	@JsonBackReference
 	@ManyToOne
     private User createdBy ;
 		
 	 
-//	//all workspaces 
-//	@JsonManagedReference 
-//	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<Workspace> workspaces;
-//	
-//	
-	// all users in company 
+	//all workspaces 
 	@JsonManagedReference 
-	@ManyToMany
-    @JoinTable(
-        name = "company_user",
-        joinColumns = @JoinColumn(name = "company_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Workspace> workspaces;
+
+	
+	
+	@JsonManagedReference 
+	@ManyToMany(mappedBy = "companies", cascade = CascadeType.ALL)
 	private List<User> users; 
+	
+	
 }

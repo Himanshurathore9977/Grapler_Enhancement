@@ -50,12 +50,11 @@ public class Workspace {
 	 
 	 @JsonBackReference
 	 @ManyToOne
-	 @JoinColumn(name = "company_id")
 	 private Company company;
 	 
-//	 @JsonManagedReference
-//	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-//	 private List<Project> projects;
+	 @JsonManagedReference
+	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+	 private List<Project> projects;
 	 
 //	 @JsonManagedReference
 //	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
