@@ -40,20 +40,19 @@ public class Folder {
     @Column(name = "folderName")
     private String folderName;
     
-    @ManyToOne
-    @JsonIdentityReference(alwaysAsId = true) // Serialize references as IDs
-    @JoinColumn(name = "project_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    //@JsonIdentityReference(alwaysAsId = true) // Serialize references as IDs
     private Project parentProject;
     
-    @JsonIdentityReference(alwaysAsId = true) // Serialize references as IDs
-    @ManyToOne
+    //@JsonIdentityReference(alwaysAsId = true) // Serialize references as IDs
+    @ManyToOne(cascade = CascadeType.ALL)
     private Folder parentfolder;
 
-    @JsonManagedReference
+    //@JsonManagedReference
     @OneToMany(mappedBy = "parentfolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Folder> subfolders;
 
-    @JsonManagedReference
+    //@JsonManagedReference
     @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 }

@@ -49,12 +49,12 @@ public class Workspace {
 	 private String workspaceName ;
 	 
 	 @JsonBackReference
-	 @ManyToOne
+	 @ManyToOne(cascade = CascadeType.ALL)
 	 private Company company;
 	 
-	 @JsonManagedReference
-	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-	 private List<Project> projects;
+//	 @JsonManagedReference
+//	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
+//	 private List<Project> projects;
 	 
 //	 @JsonManagedReference
 //	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)

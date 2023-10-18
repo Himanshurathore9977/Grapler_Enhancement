@@ -14,8 +14,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -38,15 +36,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-@JsonIdentityInfo(
-	    generator = ObjectIdGenerators.PropertyGenerator.class,
-	    property = "companyID"
-)
+//@JsonIdentityInfo(
+//	    generator = ObjectIdGenerators.PropertyGenerator.class,
+//	    property = "companyID"
+//)
 
 public class Company {
 	@Id                                                                
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long companyID ;
+	private Long id ;
 	
 	
 	@Column(name = "companyName", nullable = false)
@@ -77,27 +75,17 @@ public class Company {
 	@Column(name = "creationTime")
 	private LocalDateTime creationTime ; 
 	
-	@JsonManagedReference
-	@OneToMany
-	private List<Role> roles  ; 
-	
-
-	//company creator 
-	@JsonBackReference
-	@ManyToOne
-    private User createdBy ;
+	//@JsonManagedReference
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<CompanyUserRole> user ; 
 		
 	 
 	//all workspaces 
 	@JsonManagedReference 
-	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
 	private List<Workspace> workspaces;
 
 	
-	
-	@JsonManagedReference 
-	@ManyToMany(mappedBy = "companies", cascade = CascadeType.ALL)
-	private List<User> users; 
 	
 	
 }

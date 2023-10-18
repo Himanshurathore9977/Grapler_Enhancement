@@ -3,6 +3,7 @@
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -48,34 +49,31 @@ import lombok.ToString;
 	    @Column(name = "project_subtype")
 	    private String  subtype; 
 	   
-	    @JsonBackReference
+	    //@JsonBackReference
 	    @ManyToOne
 	    @JoinColumn(name = "created_by")
 	    private User createdBy;
 	   
-//	   	@JsonBackReference 
-//	    @ManyToOne
-//	    @JoinColumn(name = "company_id")
-//	    private Company company;
+	   	@JsonBackReference 
+	    @ManyToOne
+	    @JoinColumn(name = "company_id")
+	    private Company company;
 	   
 	    @JsonBackReference 
-	    @ManyToOne
+	    @ManyToOne(cascade = CascadeType.ALL)
 	    private Workspace workspace;
-	   
 
 	    @JsonManagedReference
 	    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	    private List<Task> tasks;
 	    
-	    
 	   	@JsonManagedReference
 	    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL, orphanRemoval = true)
 	    private List<Folder> subfolders;
 	    
-	   @JsonManagedReference
+	   @JsonIgnore
 	   @ManyToMany
 	   private List<User>users;
 	    
-
 
 }

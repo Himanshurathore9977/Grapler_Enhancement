@@ -23,36 +23,19 @@ public class CompanyController {
 	
 	@Autowired
 	UserRepository userRepo ; 
-	@GetMapping
+	@GetMapping("/")
 	public List<Company> getAllUser() {
-		System.out.println(companyRepo.findAll());
-		List<Company> compnay =companyRepo.findAll() ; 
-		System.out.println(compnay);
-		return compnay ;
+		return companyRepo.findAll() ;
 	}
 	
-//	@PostMapping
-//	public Company addOwner(@RequestBody Company company) {
-//		System.out.println("Company is created ");
-//		//set creation time 
-//		//company.setCreationTime( LocalDateTime.now());
-//		
-////		//CREATED BY 
-////		User createdBY = company.getCreatedBy() ; 
-////		userRepo.save(createdBY) ;
-//		
-////		//ADMINLIST 
-////		List<User> AdminList = company.getCompanyAdmins() ; 
-////		//AdminList.forEach((admin) -> admin.setAdminCompanies());
-////		userRepo.saveAll(AdminList) ; 
-//		
-//		
-////		//USER
-////		List<User> userList = company.getUsers() ; 
-////		userRepo.saveAll(userList) ; 
-//
-//		System.out.println(company.getCompanyName());
-//		return companyRepo.save(company);
-//	}
+	@PostMapping
+	public Company addOwner(@RequestBody Company company) {
+		System.out.println("Company is created ");
+		//set creation time 
+		company.setCreationTime( LocalDateTime.now());
+		
+		System.out.println(company.getCompanyName());
+		return companyRepo.save(company);
+	}
 
 }

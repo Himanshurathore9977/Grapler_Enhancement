@@ -38,37 +38,34 @@ public class Task {
     
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name = "folder_id")
+    //@JoinColumn(name = "folder_id")
     private Folder folder;
     
     
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "task_creator_id")
+    @ManyToOne
     private User taskCreator;
-
-    
     
     
     @JsonManagedReference
-    @ManyToMany(mappedBy = "assignedTask", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "assignedTask")
     private List<User> assignedTo;
-
+    
     @JsonBackReference
     @ManyToOne
     private User accountableAssignee ; 
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Project project;
+
+   @ManyToOne 
+   @JoinColumn(name = "workspace_id")
+   private Workspace workspace;
 //
-//   @ManyToOne
-//   @JoinColumn(name = "workspace_id")
-//   private Workspace workspace;
-//
-//   @ManyToOne
-//   @JoinColumn(name = "company_id")
-//   private Company company;
+   @ManyToOne
+   @JoinColumn(name = "company_id")
+   private Company company;
 
    
 

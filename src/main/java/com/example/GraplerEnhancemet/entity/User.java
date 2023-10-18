@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,42 +35,30 @@ public class User {
     @Column(name = "profile")
     private String profile;
     
+ 
     @JsonManagedReference
-    @OneToMany
-    private List <Role> roles ;
-    
-       
-    @JsonManagedReference
-    @OneToMany(mappedBy = "createdBy")
-    private List<Company> companyCreated;
-    
+    @OneToMany(mappedBy = "user" ,   cascade = CascadeType.ALL , orphanRemoval = true  )
+    private List<CompanyUserRole> company ; 
+   
     
     // projects 
-    @JsonManagedReference
-	@ManyToMany
-	private List<Project> projects;
-    
-    
-//    @JsonManagedReference
-//    @ManyToMany(mappedBy = "user")
-//    private List<Company> companies;
+//  @JsonManagedReference
+//	@ManyToMany
+//	private List<Project> projects;
     
     @JsonManagedReference
-    @OneToMany(mappedBy = "taskCreator", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "taskCreator" )
     private List<Task> taskCreated;
-    
+//    
     @JsonManagedReference
-    @ManyToMany( cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Task> assignedTask;
     
     @JsonManagedReference
-    @OneToMany(mappedBy = "accountableAssignee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountableAssignee")
     private List<Task> accountableAssigned ; 
     
-  @JsonManagedReference
-  @ManyToMany(cascade = CascadeType.ALL)
-  private List<Company> companies ;
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -77,11 +66,7 @@ public class User {
         .append("User{id=").append(id)
           .append(
         		  ", name='").append(name).append("'") ; 
-         // .append(", adminCompanies=[");
-        
-        
         sb.append("]}") ;
-        
         return sb.toString();
     }
     

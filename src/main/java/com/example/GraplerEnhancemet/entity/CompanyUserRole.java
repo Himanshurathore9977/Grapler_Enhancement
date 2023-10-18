@@ -1,15 +1,14 @@
 package com.example.GraplerEnhancemet.entity;
 
-
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,7 +20,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "Role")
+@Table(name = "companyUserRole")
 @Data
 @Getter
 @Setter
@@ -29,23 +28,22 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long id;
-
-    @JsonBackReference
-    @ManyToOne
-    private User user;
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-    
-    @Column(name = "role")
-    private String role;
-
-    
+public class CompanyUserRole {
+	
+	 @Id
+	 @GeneratedValue(strategy = GenerationType.IDENTITY)
+	  private Long id;
+	
+	 @Enumerated(EnumType.STRING)
+	 private RoleEnum role;
+	 
+	@JsonBackReference
+	@ManyToOne(cascade = CascadeType.ALL)
+	private User user ; 
+	
+//	@JsonBackReference
+	@ManyToOne
+	private Company company ; 
+	
+	
 }

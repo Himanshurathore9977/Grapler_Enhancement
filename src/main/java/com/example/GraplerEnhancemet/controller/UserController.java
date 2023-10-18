@@ -26,16 +26,7 @@ public class UserController {
 	}
 
 	
-//	@GetMapping
-//	public String  getAllUser() {
-//		System.out.println(userRepo.findAll());
-//		List<User> users =userRepo.findAll() ; 
-//		System.out.println(users);
-//		
-//		return users.toString();
-//	}
-	
-	@PostMapping
+	@PostMapping("/")
 	public User addUser(@RequestBody User user) {
 		//System.out.println(user);
 		//System.out.println(user.getName());
