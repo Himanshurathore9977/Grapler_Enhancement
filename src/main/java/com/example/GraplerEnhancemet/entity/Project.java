@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,42 +39,43 @@ import lombok.ToString;
 	public class Project {
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long projectID;
+	    private Long id ;
 
-	    @Column(name = "project_name", nullable = false)
-	    private String projectName;
+	    @Column(nullable = false)
+	    private String name;
 	    
-	    @Column(name = "project_type")
 	    private String type ;
 
-	    @Column(name = "project_subtype")
 	    private String  subtype; 
 	   
-	    //@JsonBackReference
-	    @ManyToOne
-	    @JoinColumn(name = "created_by")
-	    private User createdBy;
 	   
-	   	@JsonBackReference 
-	    @ManyToOne
-	    @JoinColumn(name = "company_id")
-	    private Company company;
+
 	   
 	    @JsonBackReference 
 	    @ManyToOne(cascade = CascadeType.ALL)
 	    private Workspace workspace;
 
-	    @JsonManagedReference
-	    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Task> tasks;
+
 	    
 	   	@JsonManagedReference
-	    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL, orphanRemoval = true)
+	    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	    private List<Folder> subfolders;
 	    
-	   @JsonIgnore
-	   @ManyToMany
+	   
+	   @ManyToMany(fetch = FetchType.EAGER)
 	   private List<User>users;
+	   
+	   
+	   
+//	   	@JsonBackReference 
+//	    @ManyToOne
+//	    @JoinColumn(name = "company_id")
+//	    private Company company;
+	   
+	   
+//	    @JsonManagedReference
+//	    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+//	    private List<Task> tasks;
 	    
 
 }

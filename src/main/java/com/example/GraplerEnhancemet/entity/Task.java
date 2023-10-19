@@ -47,26 +47,26 @@ public class Task {
     private User taskCreator;
     
     
-    @JsonManagedReference
-    @ManyToMany(mappedBy = "assignedTask")
-    private List<User> assignedTo;
-    
+//    @JsonManagedReference
+//    @ManyToMany(mappedBy = "assignedTask")
+//    private List<User> assignedTo;
+//    
     @JsonBackReference
     @ManyToOne
     private User accountableAssignee ; 
-
+//
     @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     private Project project;
-
-   @ManyToOne 
-   @JoinColumn(name = "workspace_id")
-   private Workspace workspace;
 //
-   @ManyToOne
-   @JoinColumn(name = "company_id")
-   private Company company;
-
+//   @ManyToOne 
+//   @JoinColumn(name = "workspace_id")
+//   private Workspace workspace;
+////
+//   @ManyToOne
+//   @JoinColumn(name = "company_id")
+//   private Company company;
+//
    
 
 }

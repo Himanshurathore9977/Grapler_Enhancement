@@ -37,22 +37,19 @@ public class Folder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID;
     
-    @Column(name = "folderName")
     private String folderName;
-    
-    @ManyToOne(cascade = CascadeType.ALL)
-    //@JsonIdentityReference(alwaysAsId = true) // Serialize references as IDs
+    @ManyToOne(cascade = CascadeType.ALL )
     private Project parentProject;
     
-    //@JsonIdentityReference(alwaysAsId = true) // Serialize references as IDs
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Folder parentfolder;
+    	@JsonIdentityReference(alwaysAsId = true) 
+    	@ManyToOne(cascade = CascadeType.ALL)
+    	private Folder parentfolder;
 
-    //@JsonManagedReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "parentfolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Folder> subfolders;
 
-    //@JsonManagedReference
-    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks;
+//    //@JsonManagedReference
+//    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Task> tasks;
 }

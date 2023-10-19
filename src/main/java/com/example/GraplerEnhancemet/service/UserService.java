@@ -1,5 +1,5 @@
 package com.example.GraplerEnhancemet.service;
 
-public enum CompanyStructureType {
+public class UserService {
 
 }

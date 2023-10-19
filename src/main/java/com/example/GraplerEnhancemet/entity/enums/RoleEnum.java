@@ -1,4 +1,4 @@
-package com.example.GraplerEnhancemet.entity;
+package com.example.GraplerEnhancemet.entity.enums;
 
 public enum RoleEnum {
 		SUPERADMIN,

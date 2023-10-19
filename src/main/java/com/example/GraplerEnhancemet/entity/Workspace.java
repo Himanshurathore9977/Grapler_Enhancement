@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,30 +37,30 @@ import lombok.ToString;
 @ToString
 @JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class,
-	    property = "workspaceID"
+	    property = "id"
 )
 
 public class Workspace {
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
-	 @Column(name = "workspaceID",  nullable = false )
-	 private Long workspaceID ;
+	 @Column( nullable = false )
+	 private Long id ;
 	 
-	 @Column(name = "workspaceName", nullable = false)
-	 private String workspaceName ;
+	 @Column( nullable = false)
+	 private String name ;
 	 
 	 @JsonBackReference
 	 @ManyToOne(cascade = CascadeType.ALL)
 	 private Company company;
 	 
-//	 @JsonManagedReference
-//	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-//	 private List<Project> projects;
-	 
+ 	 @JsonManagedReference
+	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+	 private List<Project> projects;
+ 
 //	 @JsonManagedReference
 //	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
 //	 private List<Task> tasks;  
-	 
+
 	 
 	 
 	
