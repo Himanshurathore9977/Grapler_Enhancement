@@ -64,12 +64,13 @@ public class Company {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "company" ,  cascade = CascadeType.ALL)
 	private List<CompanyUserRole> userRole ; 
-		
-	 
-	//all workspaces 
+	
+	  
 	@JsonManagedReference 
 	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
 	private List<Workspace> workspaces;
+	
+
 
 	
 	

@@ -3,6 +3,7 @@ package com.example.GraplerEnhancemet.entity;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -38,6 +39,7 @@ public class Folder {
     private Long ID;
     
     private String folderName;
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL )
     private Project parentProject;
     
@@ -45,11 +47,11 @@ public class Folder {
     	@ManyToOne(cascade = CascadeType.ALL)
     	private Folder parentfolder;
 
-    @JsonManagedReference
+    	
     @OneToMany(mappedBy = "parentfolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Folder> subfolders;
 
-//    //@JsonManagedReference
-//    @OneToMany( cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Task> tasks;
+    //@JsonManagedReference
+    @OneToMany( cascade = CascadeType.ALL)
+    private List<Task> tasks;
 }

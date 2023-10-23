@@ -56,10 +56,7 @@ public class Workspace {
  	 @JsonManagedReference
 	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL , fetch = FetchType.EAGER)
 	 private List<Project> projects;
- 
-//	 @JsonManagedReference
-//	 @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-//	 private List<Task> tasks;  
+  
 
 	 
 	 

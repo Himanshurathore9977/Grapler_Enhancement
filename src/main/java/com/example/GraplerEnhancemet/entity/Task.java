@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,36 +37,28 @@ public class Task {
     @Column(name = "status")
     private String status; 
     
-    @JsonBackReference
-    @ManyToOne
-    //@JoinColumn(name = "folder_id")
+    
+    @ManyToOne(cascade = CascadeType.ALL )
     private Folder folder;
     
     
-    @JsonBackReference
     @ManyToOne
     private User taskCreator;
     
     
-//    @JsonManagedReference
-//    @ManyToMany(mappedBy = "assignedTask")
-//    private List<User> assignedTo;
-//    
-    @JsonBackReference
+    @ManyToMany(mappedBy = "assignedTask" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    private List<User> assignedTo;
+
+    
     @ManyToOne
     private User accountableAssignee ; 
+
+    
+    	@ManyToOne(cascade = CascadeType.ALL)
+    	private Project project;
 //
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Project project;
-//
-//   @ManyToOne 
-//   @JoinColumn(name = "workspace_id")
-//   private Workspace workspace;
-////
-//   @ManyToOne
-//   @JoinColumn(name = "company_id")
-//   private Company company;
+  
+
 //
    
 

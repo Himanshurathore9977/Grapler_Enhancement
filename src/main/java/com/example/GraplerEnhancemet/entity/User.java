@@ -41,33 +41,28 @@ public class User {
     
     
     
- 
-//    @JsonManagedReference
-//    @JsonBackReference
+
     @JsonIgnore
     @OneToMany(mappedBy = "user" ,   cascade = CascadeType.ALL , fetch = FetchType.EAGER  )
     private List<CompanyUserRole> company ; 
    
-    
-//    // projects 
-    @JsonManagedReference
+   
 	@ManyToMany(mappedBy = "users" ,  fetch = FetchType.EAGER)
 	private List<Project> projects;
-//    
-    @JsonManagedReference
-    @OneToMany(mappedBy = "taskCreator" )
-    private List<Task> taskCreated;
 
-//    @JsonManagedReference
-//    @ManyToMany
-//    private List<Task> assignedTask;
-//    
-    @JsonManagedReference
-    @OneToMany(mappedBy = "accountableAssignee")
+
+	@OneToMany(mappedBy = "taskCreator" , fetch = FetchType.EAGER )
+	private List<Task> taskCreated;
+
+
+	@JsonIgnore
+    @ManyToMany
+    private List<Task> assignedTask;
+
+	
+	@JsonIgnore
+    @OneToMany(mappedBy = "accountableAssignee" , fetch = FetchType.EAGER  )
     private List<Task> accountableAssigned ; 
-//    
-//
-//      
-    
+
 }
 

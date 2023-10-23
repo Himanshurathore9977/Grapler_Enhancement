@@ -24,7 +24,7 @@ public class UserController {
 	UserRepository userRepo ;
 	
 	@Autowired
-	CompanyRepository companyRepo ; 
+	CompanyRepository companyRepo ; 	
 	
 	@GetMapping
 	public List<User> getAllUser() {

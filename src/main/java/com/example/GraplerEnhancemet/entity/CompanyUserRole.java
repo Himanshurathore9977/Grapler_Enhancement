@@ -40,7 +40,6 @@ public class CompanyUserRole {
 	 @Enumerated(EnumType.STRING)
 	 private RoleEnum role;
 	 
-	//@JsonManagedReference
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private User user ; 
 	

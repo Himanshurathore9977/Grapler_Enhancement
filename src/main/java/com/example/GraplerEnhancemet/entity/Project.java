@@ -49,33 +49,28 @@ import lombok.ToString;
 	    private String  subtype; 
 	   
 	   
-
-	   
 	    @JsonBackReference 
-	    @ManyToOne(cascade = CascadeType.ALL)
+	    @ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
 	    private Workspace workspace;
 
 
-	    
-	   	@JsonManagedReference
+
 	    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	    private List<Folder> subfolders;
 	    
-	   
+//	   @JsonBackReference
+	   @JsonIgnore
 	   @ManyToMany(fetch = FetchType.EAGER)
 	   private List<User>users;
+   
 	   
 	   
+	 
+	    
 	   
-//	   	@JsonBackReference 
-//	    @ManyToOne
-//	    @JoinColumn(name = "company_id")
-//	    private Company company;
-	   
-	   
-//	    @JsonManagedReference
-//	    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-//	    private List<Task> tasks;
+	    //@JsonManagedReference
+	    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Task> tasks;
 	    
 
 }
