@@ -37,29 +37,29 @@ public class Task {
 
     @Column(name = "description")
     private String description;
-    
+
     @Column(name = "status")
-    private String status; 
-    
-    
-    @ManyToOne(cascade = CascadeType.ALL )
+    private String status;
+
+    @JsonBackReference
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    private Project project;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH} )
     private Folder folder;
-    
-    
+
+
     @ManyToOne
     private User taskCreator;
-    
-    
+
+
     @ManyToMany(mappedBy = "assignedTask" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     private List<User> assignedTo;
 
-    
-    @ManyToOne
-    private User accountableAssignee ; 
 
-    
-    	@ManyToOne(cascade = CascadeType.ALL)
-    	private Project project;
+    @ManyToOne
+    private User accountableAssignee ;
+
 //
   
 

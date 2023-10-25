@@ -43,9 +43,9 @@ public class Folder {
     @ManyToOne(cascade = CascadeType.ALL )
     private Project parentProject;
     
-    	@JsonIdentityReference(alwaysAsId = true) 
-    	@ManyToOne(cascade = CascadeType.ALL)
-    	private Folder parentfolder;
+    @JsonIdentityReference(alwaysAsId = true)
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Folder parentfolder;
 
     	
     @OneToMany(mappedBy = "parentfolder", cascade = CascadeType.ALL, orphanRemoval = true)

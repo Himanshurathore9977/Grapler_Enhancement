@@ -50,21 +50,22 @@ import lombok.ToString;
 
 
 		@JsonBackReference
-		@ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+		@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH} , fetch = FetchType.EAGER)
 		private Workspace workspace;
 
+	    @JsonManagedReference
+		@OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	    private List<Task> tasks;
+
+//		@JsonManagedReference
+		@JsonIgnore
 	    @OneToMany(mappedBy = "parentProject", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	    private List<Folder> subFolders;
-	    
-//	   @JsonBackReference
-	   @JsonIgnore
-	   @ManyToMany(fetch = FetchType.EAGER)
-	   private List<User> users;
 
-	   
-	    //@JsonManagedReference
-	    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
-	    private List<Task> tasks;
-	    
+//	   @JsonBackReference
+		@JsonIgnore
+		@ManyToMany(fetch = FetchType.EAGER)
+		private List<User> users;
+
 
 }

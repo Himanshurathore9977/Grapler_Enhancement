@@ -28,14 +28,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "workspace")
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class,
 	    property = "id"
@@ -60,6 +56,4 @@ public class Workspace {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	private List<Project> projects;
-
-
 }
