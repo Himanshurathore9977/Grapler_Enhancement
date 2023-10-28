@@ -23,7 +23,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "task")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

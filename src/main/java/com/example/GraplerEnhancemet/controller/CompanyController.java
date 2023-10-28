@@ -1,11 +1,15 @@
 package com.example.GraplerEnhancemet.controller;
 
+import com.example.GraplerEnhancemet.custom_exception.DuplicateCompanyException;
+import com.example.GraplerEnhancemet.entity.Company;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -62,9 +66,9 @@ public class CompanyController {
 	}
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<CompanyDTO>> createCompany(@Valid @RequestBody CompanyDTO companyDTO) {
+	public ResponseEntity<ApiResponse<CompanyDTO>> createCompany(@Valid @RequestBody Company company) {
 		try {
-			CompanyDTO createdCompany = companyService.createCompany(companyDTO);
+			CompanyDTO createdCompany = companyService.createCompany(company);
 			if (createdCompany != null) {
 				logger.info("Company created successfully: {}", createdCompany.getName());
 				return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, createdCompany, "Company created successfully"));
@@ -72,6 +76,9 @@ public class CompanyController {
 				logger.error("Internal Server Error while creating company");
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, null, "Internal Server Error"));
 			}
+		} catch (DuplicateCompanyException ex) {
+			logger.error("Duplicate company creation attempt: {}", ex.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse<>(false, null, ex.getMessage()));
 		} catch (Exception e) {
 			logger.error("Internal Server Error while creating company", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, null, e.getMessage()));
@@ -79,9 +86,9 @@ public class CompanyController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<ApiResponse<CompanyDTO>> updateCompany(@PathVariable Long id,@Valid @RequestBody CompanyDTO companyDTO) {
+	public ResponseEntity<ApiResponse<CompanyDTO>> updateCompany(@PathVariable Long id,@Valid @RequestBody Company company) {
 		try {
-			CompanyDTO updatedCompany = companyService.updateCompany(id, companyDTO);
+			CompanyDTO updatedCompany = companyService.updateCompany(id, company);
 			if (updatedCompany != null) {
 				logger.info("Company updated successfully: {}", updatedCompany.getName());
 				return ResponseEntity.ok(new ApiResponse<>(true, updatedCompany, "Company updated successfully"));
@@ -89,6 +96,9 @@ public class CompanyController {
 				logger.warn("Company not found with ID: {}", id);
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, null, "Company not found"));
 			}
+		} catch (DuplicateCompanyException ex) {
+			logger.error("Duplicate company creation attempt: {}", ex.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse<>(false, null, ex.getMessage()));
 		} catch (Exception e) {
 			logger.error("Internal Server Error while updating company with ID: " + id, e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, null, e.getMessage()));

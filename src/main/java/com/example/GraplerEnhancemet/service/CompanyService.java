@@ -2,12 +2,18 @@ package com.example.GraplerEnhancemet.service;
 
 import com.example.GraplerEnhancemet.Repository.CompanyRepository;
 import com.example.GraplerEnhancemet.Repository.WorkspaceRepository;
+import com.example.GraplerEnhancemet.custom_exception.DuplicateCompanyException;
 import com.example.GraplerEnhancemet.entity.Workspace;
+import com.example.GraplerEnhancemet.util.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.GraplerEnhancemet.entity.Company;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -61,9 +67,18 @@ public class CompanyService {
         }
     }
 
-    public CompanyDTO createCompany(CompanyDTO companyDTO) {
+    public CompanyDTO createCompany(Company company) {
         try {
-            Company company = modelMapper.map(companyDTO, Company.class);
+            Company existingCompanyByName = getCompanyByName(company.getName());
+            if (existingCompanyByName != null) {
+                throw new DuplicateCompanyException("A company with the same name already exists.");
+            }
+
+            // Check if another company with the same email exists
+            Company existingCompanyByEmail = getCompanyByEmail(company.getEmail());
+            if (existingCompanyByEmail != null ) {
+                throw new DuplicateCompanyException("A company with the same email already exists.");
+            }
             company.setCreationTime(LocalDateTime.now());
             Workspace workspace = new Workspace();
             workspace.setName("Default");
@@ -74,36 +89,59 @@ public class CompanyService {
             CompanyDTO createdCompanyDTO = modelMapper.map(createdCompany, CompanyDTO.class);
             logger.info("Company created successfully: {}", createdCompanyDTO.getName());
             return createdCompanyDTO;
+        } catch (DuplicateCompanyException ex) {
+            logger.error("A company with the same name or email already exists.");
+            throw ex;
+        } catch (DataIntegrityViolationException ex) {
+//            throw new DuplicateCompanyException("A company with the same email or name already exists.");
+            logger.error("Unexpected DataIntegrityViolation during company creation: " + ex.getMessage(), ex);
+            throw ex;
+        } catch (UnexpectedRollbackException ex) {
+            logger.error("Unexpected rollback during company creation: " + ex.getMessage(), ex);
+            return null;
         } catch (Exception e) {
             logger.error("Error while creating company", e);
-            return null;
+           return null;
         }
-    }
+        }
 
-    public CompanyDTO updateCompany(Long id, CompanyDTO updatedCompanyDTO) {
+    public CompanyDTO updateCompany(Long id, Company updatedCompany) {
         try {
+
             Company existingCompany = companyRepository.findById(id).orElse(null);
             if (existingCompany != null) {
-                if (updatedCompanyDTO.getName() != null) {
-                    existingCompany.setName(updatedCompanyDTO.getName());
+
+                Company existingCompanyByName = getCompanyByName(updatedCompany.getName());
+                if (existingCompanyByName != null && !existingCompanyByName.getId().equals(id)) {
+                    throw new DuplicateCompanyException("A company with the same name already exists.");
                 }
-                if (updatedCompanyDTO.getEmail() != null) {
-                    existingCompany.setEmail(updatedCompanyDTO.getEmail());
+
+                // Check if another company with the same email exists
+                Company existingCompanyByEmail = getCompanyByEmail(updatedCompany.getEmail());
+                if (existingCompanyByEmail != null && !existingCompanyByEmail.getId().equals(id)) {
+                    throw new DuplicateCompanyException("A company with the same email already exists.");
                 }
-                if (updatedCompanyDTO.getLogo() != null) {
-                    existingCompany.setLogo(updatedCompanyDTO.getLogo());
+
+                if (updatedCompany.getName() != null) {
+                    existingCompany.setName(updatedCompany.getName());
                 }
-                if (updatedCompanyDTO.getDescription() != null) {
-                    existingCompany.setDescription(updatedCompanyDTO.getDescription());
+                if (updatedCompany.getEmail() != null) {
+                    existingCompany.setEmail(updatedCompany.getEmail());
                 }
-                if (updatedCompanyDTO.getStructureType() != null) {
-                    existingCompany.setStructureType(updatedCompanyDTO.getStructureType());
+                if (updatedCompany.getLogo() != null) {
+                    existingCompany.setLogo(updatedCompany.getLogo());
                 }
-                if (updatedCompanyDTO.getContactNumber() != null) {
-                    existingCompany.setContactNumber(updatedCompanyDTO.getContactNumber());
+                if (updatedCompany.getDescription() != null) {
+                    existingCompany.setDescription(updatedCompany.getDescription());
                 }
-                if (updatedCompanyDTO.getAddress() != null) {
-                    existingCompany.setAddress(updatedCompanyDTO.getAddress());
+                if (updatedCompany.getStructureType() != null) {
+                    existingCompany.setStructureType(updatedCompany.getStructureType());
+                }
+                if (updatedCompany.getContactNumber() != null) {
+                    existingCompany.setContactNumber(updatedCompany.getContactNumber());
+                }
+                if (updatedCompany.getAddress() != null) {
+                    existingCompany.setAddress(updatedCompany.getAddress());
                 }
 
                 // Save the updated entity
@@ -116,7 +154,17 @@ public class CompanyService {
                 logger.warn("Company not found with ID: " + id);
                 return null;
             }
-        } catch (Exception e) {
+        } catch (DuplicateCompanyException ex) {
+            logger.error("A company with the same name or email already exists.");
+            throw ex;
+        } catch (DataIntegrityViolationException ex) {
+//            throw new DuplicateCompanyException("A company with the same email or name already exists.");
+            logger.error("Unexpected DataIntegrityViolation during company updation: " + ex.getMessage(), ex);
+            throw ex;
+        } catch (UnexpectedRollbackException ex) {
+            logger.error("Unexpected rollback during company updation : " + ex.getMessage(), ex);
+            return null;
+        }  catch (Exception e) {
             logger.error("Error while updating company with ID: " + id, e);
             return null;
         }
@@ -138,6 +186,12 @@ public class CompanyService {
             logger.error("Error while deleting company with ID: " + id, e);
             return false;
         }
+    }
+    public Company getCompanyByName(String name) {
+        return companyRepository.findByName(name).orElse(null);
+    }
+    public Company getCompanyByEmail(String email) {
+        return companyRepository.findByEmail(email).orElse(null);
     }
 }
 

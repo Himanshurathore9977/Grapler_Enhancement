@@ -21,6 +21,12 @@ public class CustomExceptionHandler {
         String message = "Invalid input Please provide a valid integer value in the URL";
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<String>(false, null, message));
     }
+
+    @ExceptionHandler(DuplicateCompanyException.class)
+    public ResponseEntity<ApiResponse<String>> handleDuplicateCompanyException(DuplicateCompanyException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse<String>(false, null, ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {

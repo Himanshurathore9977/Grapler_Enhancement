@@ -6,16 +6,7 @@ import java.util.List;
 import com.example.GraplerEnhancemet.entity.enums.StructureType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,37 +18,38 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Company {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id ;
 	@NotBlank(message = "Name is required")
-	@Column(nullable = false)
+	@Column(unique = true,nullable = false)
 	private String name;
 
 	@NotBlank(message = "Email is required")
 	@Email(message = "Invalid email format")
-	@Column(nullable = false)
+	@Column(unique = true,nullable = false)
 	private String email;
 
-	@Lob
+	@Column(columnDefinition = "LONGBLOB")
+	@Basic(fetch = FetchType.LAZY)
 	private byte[] logo;
 
 	@Size(max = 255, message = "Description should not exceed 255 characters")
 	private String description;
 
 	@Enumerated(EnumType.STRING)
+	@NotNull(message = "Structure type must be provided")
 	private StructureType structureType;
 
+	@NotBlank(message = "Contact number is required")
 	@Pattern(regexp = "\\d{10}", message = "Invalid contact number")
 	private String contactNumber;
 
 	@NotBlank(message = "Address is required")
 	private String address;
 
-	@NotNull(message = "Creation time must be provided")
 	private LocalDateTime creationTime;
 /*
 	@Id

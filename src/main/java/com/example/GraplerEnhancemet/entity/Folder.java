@@ -13,24 +13,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
-@Table(name = "folder")
-@Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
 public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +34,7 @@ public class Folder {
     private Folder parentfolder;
 
     	
-    @OneToMany(mappedBy = "parentfolder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentfolder", cascade = CascadeType.ALL)
     private List<Folder> subfolders;
 
     //@JsonManagedReference

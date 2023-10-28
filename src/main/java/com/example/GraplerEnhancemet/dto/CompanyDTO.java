@@ -2,6 +2,7 @@ package com.example.GraplerEnhancemet.dto;
 
 import com.example.GraplerEnhancemet.entity.enums.StructureType;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
