@@ -16,12 +16,18 @@ import com.example.GraplerEnhancemet.entity.Company;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.GraplerEnhancemet.dto.CompanyDTO;
 import org.modelmapper.ModelMapper;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
 
 
 @Service
@@ -192,6 +198,42 @@ public class CompanyService {
     }
     public Company getCompanyByEmail(String email) {
         return companyRepository.findByEmail(email).orElse(null);
+    }
+    public CompanyDTO AddLogo(MultipartFile logo, Long companyId) {
+        GenerateThumbnail generate = new GenerateThumbnail();
+        try {
+            if (logo != null && !logo.isEmpty()) {
+                try (InputStream logoInputStream = logo.getInputStream()) {
+                    BufferedImage originalImage = ImageIO.read(logoInputStream);
+                    int thumbnailWidth = 100; // Adjust to your desired thumbnail width
+                    int thumbnailHeight = 100; // Adjust to your desired thumbnail height
+                    byte[] thumbnailData = generate.generateThumbnail(originalImage, thumbnailWidth, thumbnailHeight);
+
+                    Optional<Company> companyOptional = companyRepository.findById(companyId);
+                    if (companyOptional.isPresent()) {
+                        Company company = companyOptional.get();
+                        company.setLogo(thumbnailData);
+                        companyRepository.save(company);
+
+                        CompanyDTO addLogoCompanyDTO = modelMapper.map(company, CompanyDTO.class);
+                        logger.info("Company Logo updated successfully: {}", addLogoCompanyDTO.getName());
+                        return addLogoCompanyDTO;
+                    } else {
+                        // Handle the case where the company with the given ID is not found
+                        logger.error("Company not found with ID: {}", companyId);
+                        return null;
+                    }
+                }
+            } else {
+                // Handle the case where the input logo is null or empty
+                logger.error("Invalid logo file provided");
+                return null;
+            }
+        } catch (Exception e) {
+            // Handle exceptions with specific error messages
+            logger.error("Error adding company logo: {}", e.getMessage(), e);
+            return null;
+        }
     }
 }
 

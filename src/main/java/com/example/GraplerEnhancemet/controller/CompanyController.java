@@ -18,6 +18,7 @@ import com.example.GraplerEnhancemet.util.ApiResponse;
 
 import java.util.List;
 import com.example.GraplerEnhancemet.dto.CompanyDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/companies")
@@ -104,6 +105,29 @@ public class CompanyController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, null, e.getMessage()));
 		}
 	}
+
+	@PutMapping("/addImage/{id}")
+	public ResponseEntity<ApiResponse<?>> addLogo(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+		try {
+			if (file != null && !file.isEmpty()) {
+				CompanyDTO companyLogoAddedDTO = companyService.AddLogo(file, id);
+
+				if (companyLogoAddedDTO != null) {
+					return ResponseEntity.ok(new ApiResponse<>(true, companyLogoAddedDTO, "Company Logo updated successfully"));
+				} else {
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, null, "Error in adding Logo"));
+				}
+			} else {
+				// Handle the case where the input file is null or empty
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(false, null, "Invalid file provided"));
+			}
+		}  catch (Exception e) {
+			// Handle general exceptions with a generic message
+			logger.error("Internal Server Error while adding company logo", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(false, null, "Internal Server Error"));
+		}
+	}
+
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<?>> deleteCompany(@PathVariable Long id) {
