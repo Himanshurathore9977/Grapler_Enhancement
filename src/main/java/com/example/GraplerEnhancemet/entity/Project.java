@@ -57,12 +57,11 @@ import lombok.NoArgsConstructor;
 		@OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	    private List<Task> tasks;
 
-//		@JsonManagedReference
-		@JsonIgnore
-	    @OneToMany(mappedBy = "parentProject", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+
+	    @OneToMany(mappedBy = "parentProject", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	    private List<Folder> subFolders;
 
-//	   @JsonBackReference
+//	   			@JsonBackReference
 		@JsonIgnore
 		@ManyToMany(fetch = FetchType.EAGER)
 		private List<User> users;

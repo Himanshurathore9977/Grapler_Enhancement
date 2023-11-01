@@ -52,7 +52,7 @@ public class Task {
     private User taskCreator;
 
 
-    @ManyToMany(mappedBy = "assignedTask" , cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "assignedTask" , cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<User> assignedTo;
 
 

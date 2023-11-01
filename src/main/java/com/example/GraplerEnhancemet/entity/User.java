@@ -29,29 +29,17 @@ public class User {
     @Column(columnDefinition = "LONGBLOB")
     @Basic(fetch = FetchType.LAZY)
     private byte[] profile;
-    
-    
-    
-
     @JsonIgnore
-    @OneToMany(mappedBy = "user" ,   cascade = CascadeType.ALL , fetch = FetchType.EAGER  )
+    @OneToMany(mappedBy = "user" , cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH} , fetch = FetchType.EAGER  )
     private List<CompanyUserRole> company ;
-
-   
-	@ManyToMany(mappedBy = "users" ,  fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "users" ,  fetch = FetchType.EAGER)
 	private List<Project> projects;
-
-
-	@OneToMany(mappedBy = "taskCreator" , fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "taskCreator" , fetch = FetchType.EAGER )
 	private List<Task> taskCreated;
-
-
-	@JsonIgnore
+    @JsonIgnore
     @ManyToMany
     private List<Task> assignedTask;
-
-	
-	@JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "accountableAssignee" , fetch = FetchType.EAGER  )
     private List<Task> accountableAssigned ; 
 

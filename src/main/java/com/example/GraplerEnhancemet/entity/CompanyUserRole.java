@@ -34,11 +34,11 @@ public class CompanyUserRole {
 	 @Enumerated(EnumType.STRING)
 	 private RoleEnum role;
 	 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	private User user ; 
 	
 	@JsonBackReference
-	@ManyToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER) 
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH} , fetch = FetchType.EAGER)
 	private Company company ; 
 	
 	

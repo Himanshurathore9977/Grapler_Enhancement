@@ -51,33 +51,7 @@ public class Company {
 	private String address;
 
 	private LocalDateTime creationTime;
-/*
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long id ;
 
-
-	@Column( nullable = false)
-    private String name;
-
-
-	@Column(nullable = false)
-    private String email;
-
-	@Lob
-	private byte[] logo ;
-
-	private String description;
-
-	@Enumerated(EnumType.STRING)
-    private StructureType  structureType;
-
-    private String contactNumber;
-
-    private String address;
-
-	private LocalDateTime creationTime ;
-*/
 	//This indicates that these are the "child" entities, and their serialization should be controlled by
 	// the parent entity
 	@JsonManagedReference

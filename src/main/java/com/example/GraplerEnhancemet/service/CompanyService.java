@@ -316,7 +316,51 @@ public class CompanyService {
         } catch (Exception e) {
             logger.error("Error while deleting company with ID: " + id, e);
             return false;
+
+        }
+    }
+
+    public Company getCompanyByName(String name) {
+        return companyRepository.findByName(name).orElse(null);
+    }
+    public Company getCompanyByEmail(String email) {
+        return companyRepository.findByEmail(email).orElse(null);
+    }
+    public Company AddLogo(MultipartFile logo, Long companyId) {
+        GenerateThumbnail generate = new GenerateThumbnail();
+        try {
+            if (logo != null && !logo.isEmpty()) {
+                try (InputStream logoInputStream = logo.getInputStream()) {
+                    BufferedImage originalImage = ImageIO.read(logoInputStream);
+                    int thumbnailWidth = 100; // Adjust to your desired thumbnail width
+                    int thumbnailHeight = 100; // Adjust to your desired thumbnail height
+                    byte[] thumbnailData = generate.generateThumbnail(originalImage, thumbnailWidth, thumbnailHeight);
+
+                    Optional<Company> companyOptional = companyRepository.findById(companyId);
+                    if (companyOptional.isPresent()) {
+                        Company company = companyOptional.get();
+                        company.setLogo(thumbnailData);
+                        companyRepository.save(company);
+
+                        logger.info("Company Logo updated successfully: {}", addLogoCompanyDTO.getName());
+                        return company;
+                    } else {
+                        // Handle the case where the company with the given ID is not found
+                        logger.error("Company not found with ID: {}", companyId);
+                        return null;
+                    }
+                }
+            } else {
+                // Handle the case where the input logo is null or empty
+                logger.error("Invalid logo file provided");
+                return null;
+            }
+        } catch (Exception e) {
+            // Handle exceptions with specific error messages
+            logger.error("Error adding company logo: {}", e.getMessage(), e);
+            return null;
         }
     }
 }
+
 */
