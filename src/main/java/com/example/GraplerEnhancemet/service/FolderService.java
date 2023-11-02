@@ -50,6 +50,7 @@ public class FolderService {
     }
 
     public Folder createFolder(Long projectId, Folder folder) {
+
         Optional<Project> projectOptional = projectRepository.findById(projectId);
         if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
@@ -152,13 +153,13 @@ public class FolderService {
             subfolders.stream()
                     .map(Folder::getId)
                     .forEach(subfolderId -> {
-                        folderRepository.deleteById(subfolderId);
+                        folderRepository.deleteFolderById(subfolderId);
                         logger.info("Subfolder is deleted with ID: {}", subfolderId);
                     });
         }
 
         // Finally, delete the folder itself
-        folderRepository.deleteById(folder.getId());
+        folderRepository.deleteFolderById(folder.getId());
         logger.info("Folder is deleted with ID: {}", folder.getId());
     }
 

@@ -66,6 +66,7 @@ public class FolderController {
 
     @PostMapping("/{projectId}/folders")
     public ResponseEntity<ApiResponse<Folder>> createFolder(@PathVariable Long projectId, @Valid @RequestBody Folder folder) {
+        logger.info("logger folder {} " , folder);
         try {
             Folder createdFolder = folderService.createFolder(projectId, folder);
                 logger.info("Folder created successfully with ID: {}", createdFolder.getId());

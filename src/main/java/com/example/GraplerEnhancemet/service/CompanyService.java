@@ -199,6 +199,10 @@ public class CompanyService {
     public Company getCompanyByEmail(String email) {
         return companyRepository.findByEmail(email).orElse(null);
     }
+
+    public Company getCompanyById(Long id) {
+        return companyRepository.findById(id).orElse(null);
+    }
     public CompanyDTO AddLogo(MultipartFile logo, Long companyId) {
         GenerateThumbnail generate = new GenerateThumbnail();
         try {
