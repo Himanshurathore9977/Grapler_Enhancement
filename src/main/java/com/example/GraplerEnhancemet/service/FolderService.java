@@ -3,6 +3,7 @@ package com.example.GraplerEnhancemet.service;
 
 import com.example.GraplerEnhancemet.Repository.FolderRepository;
 import com.example.GraplerEnhancemet.Repository.ProjectRepository;
+import com.example.GraplerEnhancemet.custom_exception.LeafFolderException;
 import com.example.GraplerEnhancemet.custom_exception.ParentNotFoundException;
 import com.example.GraplerEnhancemet.entity.Folder;
 import com.example.GraplerEnhancemet.entity.Project;
@@ -48,7 +49,40 @@ public class FolderService {
         }
     }
 
-    public Folder createFolder(Long projectId, Long parentFolderId, Folder folder) {
+    public Folder createFolder(Long projectId, Folder folder) {
+        Optional<Project> projectOptional = projectRepository.findById(projectId);
+        if (projectOptional.isPresent()) {
+            Project project = projectOptional.get();
+            folder.setParentProject(project);
+            Folder createdFolder = folderRepository.save(folder);
+            logger.info("Folder created successfully with ID: {}", createdFolder.getId());
+            return createdFolder;
+        } else {
+            logger.error("Parent Project Not Found with ID: {}", projectId);
+            throw new ParentNotFoundException("Parent Project Not Found with ID: " + projectId);
+        }
+    }
+
+    public Folder createSubFolder(Long parentFolderId, Folder folder) {
+        Optional<Folder> parentFolderOptional = folderRepository.findById(parentFolderId);
+        if (parentFolderOptional.isPresent()) {
+            Folder parentFolder = parentFolderOptional.get();
+            String parentFolderType = String.valueOf(parentFolder.getFolderType());
+            if(parentFolderType.equals("NONLEAF")) {
+                folder.setParentFolder(parentFolder);
+                Folder createdFolder = folderRepository.save(folder);
+                logger.info("Folder created successfully with ID: {}", createdFolder.getId());
+                return createdFolder;
+            } else {
+                throw new LeafFolderException("Folder can't be created, Parent Folder is Leaf with ID: " + parentFolderId);
+            }
+        } else {
+            logger.warn("Parent Folder Not Found with ID: {}", parentFolderId);
+            throw new ParentNotFoundException("Parent Folder Not Found with ID: " + parentFolderId);
+        }
+    }
+
+    /* public Folder createFolder1(Long projectId, Long parentFolderId, Folder folder) {
         Optional<Project> projectOptional = projectRepository.findById(projectId);
         if (projectOptional.isPresent()) {
             Project project = projectOptional.get();
@@ -57,6 +91,7 @@ public class FolderService {
                 Optional<Folder> parentFolderOptional = folderRepository.findById(parentFolderId);
                 if (parentFolderOptional.isPresent()) {
                     Folder parentFolder = parentFolderOptional.get();
+                    logger.info("Parent Folder added successfully with ID: {}", parentFolderId);
                     folder.setParentfolder(parentFolder);
                 } else {
                     logger.warn("Parent Folder Not Found with ID: {}", parentFolderId);
@@ -64,14 +99,14 @@ public class FolderService {
                 }
             }
                 Folder createdFolder = folderRepository.save(folder);
-                logger.info("Top-level Folder created successfully with ID: {}", createdFolder.getID());
+                logger.info("Folder created successfully with ID: {}", createdFolder.getId());
                 return createdFolder;
         } else {
             logger.error("Parent Project Not Found with ID: {}", projectId);
             throw new ParentNotFoundException("Parent Project Not Found with ID: " + projectId);
         }
     }
-
+*/
     public Folder updateFolder(Long folderId, Folder updatedFolder) {
         Optional<Folder> folder = folderRepository.findById(folderId);
         if (folder.isPresent()) {
@@ -90,19 +125,61 @@ public class FolderService {
             return null;
         }
     }
-
+//Point
+//Spring Boot doesn't provide specific properties for cascading deletes in self-referencing entities
     public boolean deleteFolder(Long folderId) {
         Optional<Folder> folder = folderRepository.findById(folderId);
         if (folder.isPresent()) {
-            folderRepository.delete(folder.get());
-            logger.info("Folder deleted successfully with ID: {}", folderId);
+            // Call a recursive method to delete the folder and its subfolders
+            logger.info("Folder is ready to delete with Folder ID: {}", folderId);
+            deleteFolderAndSubfoldersRecursive(folder.get());
             return true;
         } else {
-            logger.warn("Folder not found with Folder ID: {}", folderId);
+            // Handle case where folder with folderId was not found
             return false;
         }
     }
+
+    private void deleteFolderAndSubfoldersRecursive(Folder folder) {
+        // Check if the folder has subfolders
+        List<Folder> subfolders = folder.getSubFolders();
+
+        if (subfolders != null && !subfolders.isEmpty()) {
+            // Recursively delete each subfolder and its subfolders
+            subfolders.forEach(this::deleteFolderAndSubfoldersRecursive);
+
+            // Delete the subfolders first
+            subfolders.stream()
+                    .map(Folder::getId)
+                    .forEach(subfolderId -> {
+                        folderRepository.deleteById(subfolderId);
+                        logger.info("Subfolder is deleted with ID: {}", subfolderId);
+                    });
+        }
+
+        // Finally, delete the folder itself
+        folderRepository.deleteById(folder.getId());
+        logger.info("Folder is deleted with ID: {}", folder.getId());
+    }
+
+
+//public boolean deleteFolder(Long projectId,Long folderId) {
+//    Optional<Folder> optionalFolder = folderRepository.findById(folderId);
+//    if (optionalFolder.isPresent()) {
+//        Folder folder = optionalFolder.get();
+//        folderRepository.deleteByParentFolderId(folderId);
+//        logger.info("Sub Folder deleted successfully with Parent Folder ID: {}", folderId);
+//
+//        folderRepository.deleteByParentProjectIdAndParentFolderId(projectId,folderId);
+//        logger.info("Folder deleted successfully with ID: {}", folderId);
+//        return true;
+//    } else {
+//        logger.warn("Folder not found with Folder ID: {}", folderId);
+//        return false;
+//    }
+//}
 }
+
 
 
 /*

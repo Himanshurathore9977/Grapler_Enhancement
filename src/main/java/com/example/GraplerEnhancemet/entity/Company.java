@@ -64,5 +64,4 @@ public class Company {
 	@OneToMany(mappedBy = "company", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	private List<Workspace> workspaces;
 
-
 }

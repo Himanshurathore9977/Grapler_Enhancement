@@ -2,7 +2,6 @@ package com.example.GraplerEnhancemet.service;
 
 import com.example.GraplerEnhancemet.Repository.ProjectRepository;
 import com.example.GraplerEnhancemet.Repository.WorkspaceRepository;
-import com.example.GraplerEnhancemet.dto.ProjectDTO;
 import com.example.GraplerEnhancemet.entity.Project;
 import com.example.GraplerEnhancemet.entity.Workspace;
 import org.modelmapper.ModelMapper;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -27,32 +25,23 @@ public class ProjectService {
     @Autowired
     private WorkspaceRepository workspaceRepository;
     @Autowired
-    private ModelMapper modelMapper; // Autowire ModelMapper
+    private ModelMapper modelMapper;
 
-//    public List<ProjectDTO> getAllProjects(Long workspaceId) {
         public List<Project> getAllProjects(Long workspaceId) {
         try {
             List<Project> projects = projectRepository.findAllByWorkspace_Id(workspaceId);
             logger.info("Retrieved all projects successfully.");
             return projects;
-            // Convert Project objects to ProjectDTO using ModelMapper
-//            return projects.stream()
-//                    .map(project -> modelMapper.map(project, ProjectDTO.class))
-//                    .collect(Collectors.toList());
-        } catch (Exception e) {
+            } catch (Exception e) {
             logger.error("Error occurred while retrieving all projects", e);
             return null;
         }
     }
-
-//    public ProjectDTO getProject(Long workspaceId, Long projectId) {
         public Project getProject(Long workspaceId, Long projectId) {
         try {
             Project project = projectRepository.findByWorkspace_IdAndId(workspaceId, projectId);
             if (project != null) {
-//                ProjectDTO projectDTO = modelMapper.map(project, ProjectDTO.class);
                 logger.info("Retrieved project successfully.");
-//                return projectDTO;
                   return project;
             } else {
                 logger.error("Project not found with ID: " + projectId);
@@ -63,8 +52,6 @@ public class ProjectService {
             return null;
         }
     }
-
-//    public ProjectDTO createProject(Long workspaceId, ProjectDTO projectDTO) {
     public Project createProject(Long workspaceId, Project project) {
         try {
             // Check if the workspace exists
@@ -73,15 +60,11 @@ public class ProjectService {
                 logger.error("Workspace not found with ID: " + workspaceId);
                 return null;
             }
-
-//            Project project = modelMapper.map(projectDTO, Project.class);
             project.setWorkspace(workspace);
             project.setCreationTime(LocalDateTime.now());
 
             Project createdProject = projectRepository.save(project);
-//            ProjectDTO createdProjectDTO = modelMapper.map(createdProject, ProjectDTO.class);
             logger.info("Project created successfully");
-//            return createdProjectDTO;
               return createdProject;
         } catch (Exception e) {
             logger.error("Error while creating project", e);
@@ -90,7 +73,6 @@ public class ProjectService {
     }
 
 
-//    public ProjectDTO updateProject(Long workspaceId, Long projectId, ProjectDTO updatedProjectDTO) {
         public Project updateProject(Long workspaceId, Long projectId, Project updatedProject) {
         try {
             Project existingProject = projectRepository.findByWorkspace_IdAndId(workspaceId, projectId);
@@ -105,10 +87,7 @@ public class ProjectService {
                     existingProject.setSubType(updatedProject.getSubType());
                 }
                 Project savedProject = projectRepository.save(existingProject);
-
-//                ProjectDTO savedProjectDTO = modelMapper.map(savedProject, ProjectDTO.class);
                 logger.info("Project updated successfully");
-//                return savedProjectDTO;
                 return savedProject;
             } else {
                 logger.error("Project not found with ID: " + projectId);

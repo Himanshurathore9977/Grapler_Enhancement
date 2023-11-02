@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 	             version="1.0.0",
 	             description="The project is to define the structure of APIs in Role Based Access Controll and Hierarchy",
 	             termsOfService="https://grappler.innogent.in/dashboard"  ,
-	             contact = @Contact ( name = "Niraj , Himanshu, Vanshika" , email ="niraj.kaushal@innogent.in ,himanshu.rathore@innogent.in , vanshika.yadav@innogent.in " ) ,
+	       		      contact = @Contact ( name = "Niraj , Himanshu, Vanshika" , email ="niraj.kaushal@innogent.in ,himanshu.rathore@innogent.in , vanshika.yadav@innogent.in " ) ,
 	             license = @License ( name = "licence",url="https://github.com/Himanshurathore9977/Grapler_Enhancement")
 
        )
